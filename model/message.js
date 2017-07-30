@@ -1,6 +1,8 @@
-let moment = require('moment');
-let mongoose = require('mongoose');
-let Schema = mongoose.Schema;
+const _ = require('lodash');
+const moment = require('moment');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const currencies = require('country-data').currencies;
 
 module.exports = mongoose.model('Message', new Schema({
     userId: {
@@ -9,11 +11,23 @@ module.exports = mongoose.model('Message', new Schema({
     },
     currencyFrom: {
         type: String,
-        required: true
+        required: true,
+        validate: {
+            validator: (currency) => {
+                return _.isPlainObject(currencies[currency]) && currencies[currency].decimals !== null
+            },
+            message: 'currencyFrom must be a valid currency code'
+        }
     },
     currencyTo: {
         type: String,
-        required: true
+        required: true,
+        validate: {
+            validator: (currency) => {
+                return _.isPlainObject(currencies[currency]) && currencies[currency].decimals !== null
+            },
+            message: 'currencyTo must be a valid currency code'
+        }
     },
     amountSell: {
         type: Number,
@@ -37,14 +51,3 @@ module.exports = mongoose.model('Message', new Schema({
         required: true
     }
 }));
-
-let eg = {
-    "userId": "134256",
-    "currencyFrom": "EUR",
-    "currencyTo": "GBP",
-    "amountSell": 1000,
-    "amountBuy": 747.10,
-    "rate": 0.7471,
-    "timePlaced": "24-JAN-15 10:27:44",
-    "originatingCountry": "FR"
-};

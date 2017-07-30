@@ -1,13 +1,13 @@
-let mongoose = require('mongoose');
-let bluebird = require('bluebird');
-let bodyParser = require('body-parser');
-let express = require('express');
+const mongoose = require('mongoose');
+const bluebird = require('bluebird');
+const bodyParser = require('body-parser');
+const express = require('express');
 
-let config = require('./config').get(process.env.NODE_ENV);
-let apiRouter = require('./routes/api');
-let port = process.env.PORT || 3000;
+const config = require('./config').get(process.env.NODE_ENV);
+const apiRouter = require('./routes/api');
+const port = process.env.PORT || 3000;
 
-let app = express();
+const app = express();
 
 // Use bluebird for mongoose promises
 mongoose.Promise = bluebird;
