@@ -3,6 +3,7 @@ const expect = chai.expect;
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
 const Message = require('../model/message');
+const Errors = require('../config/errors').get('model').Message;
 
 const data = {
     userId: 134256,
@@ -59,7 +60,7 @@ describe('Model', () => {
             new Message(msg).save((err, message) => {
                 expect(err).to.be.an('object');
                 expect(err.errors).to.have.property('currencyFrom');
-                expect(err.errors.currencyFrom.message).to.equal('currencyFrom must be a valid currency code');
+                expect(err.errors.currencyFrom.message).to.equal(Errors.currencyFrom);
 
                 done();
             });
@@ -75,7 +76,7 @@ describe('Model', () => {
             new Message(msg).save((err, message) => {
                 expect(err).to.be.an('object');
                 expect(err.errors).to.have.property('currencyTo');
-                expect(err.errors.currencyTo.message).to.equal('currencyTo must be a valid currency code');
+                expect(err.errors.currencyTo.message).to.equal(Errors.currencyTo);
 
                 done();
             });

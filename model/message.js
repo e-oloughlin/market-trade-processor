@@ -3,6 +3,7 @@ const moment = require('moment');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const currencies = require('country-data').currencies;
+const Errors = require('../config/errors').get('model').Message;
 
 module.exports = mongoose.model('Message', new Schema({
     userId: {
@@ -16,7 +17,7 @@ module.exports = mongoose.model('Message', new Schema({
             validator: (currency) => {
                 return _.isPlainObject(currencies[currency]) && currencies[currency].decimals !== null
             },
-            message: 'currencyFrom must be a valid currency code'
+            message: Errors.currencyFrom
         }
     },
     currencyTo: {
@@ -26,7 +27,7 @@ module.exports = mongoose.model('Message', new Schema({
             validator: (currency) => {
                 return _.isPlainObject(currencies[currency]) && currencies[currency].decimals !== null
             },
-            message: 'currencyTo must be a valid currency code'
+            message: Errors.currencyTo
         }
     },
     amountSell: {
