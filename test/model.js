@@ -1,9 +1,10 @@
 const chai = require('chai');
 const expect = chai.expect;
 const mongoose = require('mongoose');
+const Promise = require('bluebird');
 const Message = require('../model/message');
 
-let data = {
+const data = {
     userId: 134256,
     currencyFrom: 'EUR',
     currencyTo: 'GBP',
@@ -16,6 +17,9 @@ let data = {
 
 describe('Model', () => {
 
+    /**
+     * Set up DB connection
+     */
     before((done) => {
         mongoose.connect('mongodb://127.0.01/market-trade-test-db', {
             useMongoClient: true
@@ -30,17 +34,19 @@ describe('Model', () => {
 
     describe('userId', () => {
         it('should be a number', (done) => {
-            const msg = Object.assign({}, data, {
-                userId: 'fifty six',
-            });
+            const ids = ['fifty six', null];
 
-            let message = new Message(msg);
+            Promise.all(ids.map((userId) => {
+                const msg = Object.assign({}, data, { userId });
 
-            message.save((err, message) => {
-                expect(err).to.be.an('object');
+                return new Message(msg).save().reflect();
+            })).each((inspection) => {
+                const result = inspection.reason();
 
-                done();
-            });
+                expect(result).to.be.an('object');
+                expect(result).to.have.property('errors');
+
+            }).then(done());
         });
     });
 
@@ -50,9 +56,7 @@ describe('Model', () => {
                 currencyFrom: 'some string that is not a currency code',
             });
 
-            let message = new Message(msg);
-
-            message.save((err, message) => {
+            new Message(msg).save((err, message) => {
                 expect(err).to.be.an('object');
                 expect(err.errors).to.have.property('currencyFrom');
                 expect(err.errors.currencyFrom.message).to.equal('currencyFrom must be a valid currency code');
@@ -68,9 +72,7 @@ describe('Model', () => {
                 currencyTo: 'somestringthatisnotacurrencycode',
             });
 
-            let message = new Message(msg);
-
-            message.save((err, message) => {
+            new Message(msg).save((err, message) => {
                 expect(err).to.be.an('object');
                 expect(err.errors).to.have.property('currencyTo');
                 expect(err.errors.currencyTo.message).to.equal('currencyTo must be a valid currency code');
@@ -86,9 +88,7 @@ describe('Model', () => {
                 amountSell: 'twentysix',
             });
 
-            let message = new Message(msg);
-
-            message.save((err, message) => {
+            new Message(msg).save((err, message) => {
                 expect(err).to.be.an('object');
                 expect(err.errors).to.have.property('amountSell');
 
@@ -99,9 +99,7 @@ describe('Model', () => {
 
     describe('Valid data', () => {
         it('should save successfully', (done) => {
-            let message = new Message(data);
-
-            message.save((err, message) => {
+            new Message(data).save((err, message) => {
                 expect(message).to.be.an('object');
 
                 done();
@@ -109,6 +107,9 @@ describe('Model', () => {
         });
     });
 
+    /**
+     * Close DB connection
+     */
     after((done) => {
         mongoose.disconnect();
 
