@@ -40,9 +40,9 @@ module.exports = mongoose.model('Message', new Schema({
         type: Number,
         required: true,
         validate: {
-            validator: (num) => {
-                // Prevent the summission of false as a property value
-                return typeof num === 'number' && num >= 1;
+            validator: (amount) => {
+                // Prevent the type casting of a submitted falsey value to 0
+                return typeof amount === 'number' && amount > 0;
             }
         }
     },
@@ -50,15 +50,21 @@ module.exports = mongoose.model('Message', new Schema({
         type: Number,
         required: true,
         validate: {
-            validator: (num) => {
-                // Prevent the summission of false as a property value
-                return typeof num === 'number' && num >= 1;
+            validator: (amount) => {
+                // Prevent the type casting of a submitted falsey value to 0
+                return typeof amount === 'number' && amount > 0;
             }
         }
     },
     rate: {
         type: Number,
-        required: true
+        required: true,
+        validate: {
+            validator: (rate) => {
+                // Prevent the type casting of a submitted falsey value to 0
+                return typeof rate === 'number' && rate > 0;
+            }
+        }
     },
     timePlaced: {
         type: String,

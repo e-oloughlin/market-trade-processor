@@ -156,6 +156,9 @@ describe('Message', () => {
 
     describe('amountSell', () => {
         it('should be a valid number', (done) => {
+            /**
+             * First, verify bad data will fail validation
+             */
             const testAmounts = [false, null, 'twenty six'];
 
             Promise.all(testAmounts.map((amountSell) => {
@@ -168,7 +171,9 @@ describe('Message', () => {
                 expect(result).to.be.an('object');
                 expect(result).to.have.property('errors');
             }).then(() => {
-                // Test good data here
+                /**
+                 * Then, verify good data will pass validation
+                 */
                 const msg = Object.assign({}, data, { amountSell: 45.78 });
 
                 new Message(msg).save((err, message) => {
@@ -184,6 +189,9 @@ describe('Message', () => {
 
     describe('amountBuy', () => {
         it('should be a valid number', (done) => {
+            /**
+             * First, verify bad data will fail validation
+             */
             const testAmounts = [false, null, 'fourty two'];
 
             Promise.all(testAmounts.map((amountBuy) => {
@@ -196,8 +204,43 @@ describe('Message', () => {
                 expect(result).to.be.an('object');
                 expect(result).to.have.property('errors');
             }).then(() => {
-                // Test good data here
+                /**
+                 * Then, verify good data will pass validation
+                 */
                 const msg = Object.assign({}, data, { amountBuy: 89.544 });
+
+                new Message(msg).save((err, message) => {
+                    expect(err).to.be.null;
+                    expect(message).to.be.an('object');
+                    expect(message).to.have.property('_id');
+
+                    done();
+                });
+            });
+        });
+    });
+
+    describe('rate', () => {
+        it('should be a valid number', (done) => {
+            /**
+             * First, verify bad data will fail validation
+             */
+            const testRates = [false, null, 'ten'];
+
+            Promise.all(testRates.map((rate) => {
+                const msg = Object.assign({}, data, { rate });
+
+                return new Message(msg).save().reflect();
+            })).each((inspection) => {
+                const result = inspection.reason();
+
+                expect(result).to.be.an('object');
+                expect(result).to.have.property('errors');
+            }).then(() => {
+                /**
+                 * Then, verify good data will pass validation
+                 */
+                const msg = Object.assign({}, data, { rate: 0.89 });
 
                 new Message(msg).save((err, message) => {
                     expect(err).to.be.null;
