@@ -12,16 +12,7 @@ const Errors = require('../config/errors').get('model');
 mongoose.Promise = Promise;
 
 // A valid message object
-const data = {
-    userId: 134256,
-    currencyFrom: 'EUR',
-    currencyTo: 'GBP',
-    amountSell: 1000,
-    amountBuy: 747.10,
-    rate: 0.7471,
-    originatingCountry: 'FR',
-    timePlaced : '24-JAN-15 10:27:44'
-};
+let data = require('../mock/data').message;
 
 describe('Message', () => {
     /**
