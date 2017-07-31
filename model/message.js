@@ -2,11 +2,12 @@ const _ = require('lodash');
 const moment = require('moment');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const timePlaced = require('./plugins/time-placed');
 const currencies = require('country-data').currencies;
 const countries = require('country-data').countries;
 const Errors = require('../config/errors').get('model').Message;
 
-module.exports = mongoose.model('Message', new Schema({
+const Message = new Schema({
     userId: {
         type: Number,
         required: true,
@@ -67,11 +68,6 @@ module.exports = mongoose.model('Message', new Schema({
             }
         }
     },
-    timePlaced: {
-        type: String,
-        required: false,
-        default: moment().format('DD-MMM-YY HH:mm:ss')
-    },
     originatingCountry: {
         type: String,
         required: true,
@@ -86,4 +82,8 @@ module.exports = mongoose.model('Message', new Schema({
             message: Errors.originatingCountry
         }
     }
-}));
+});
+
+Message.plugin(timePlaced);
+
+module.exports = mongoose.model('Message', Message);

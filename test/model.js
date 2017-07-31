@@ -15,7 +15,6 @@ const data = {
     amountSell: 1000,
     amountBuy: 747.10,
     rate: 0.7471,
-    timePlaced: '24-JAN-15 10:27:44',
     originatingCountry: 'FR'
 };
 
@@ -290,6 +289,22 @@ describe('Message', () => {
 
                     done();
                 });
+            });
+        });
+    });
+
+    // Prove the timePlaced plugin is working
+    describe('timePlaced', () => {
+        it('should be automatically added to every model', (done) => {
+            const msg = Object.assign({}, data);
+
+            new Message(msg).save((err, message) => {
+                expect(err).to.be.null;
+                expect(message).to.be.an('object');
+                expect(message).to.have.property('timePlaced');
+                expect(message.timePlaced).to.be.an.instanceof(Date);
+
+                done();
             });
         });
     });
