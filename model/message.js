@@ -3,6 +3,7 @@ const moment = require('moment');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const currencies = require('country-data').currencies;
+const countries = require('country-data').countries;
 const Errors = require('../config/errors').get('model').Message;
 
 module.exports = mongoose.model('Message', new Schema({
@@ -73,6 +74,16 @@ module.exports = mongoose.model('Message', new Schema({
     },
     originatingCountry: {
         type: String,
-        required: true
+        required: true,
+        validate: {
+            validator: (country) => {
+                if(typeof country === 'string' && country.length > 0) {
+                    return _.isPlainObject(countries[country]) && typeof countries[country].alpha2 === 'string';
+                }
+
+                return false;
+            },
+            message: Errors.originatingCountry
+        }
     }
 }));

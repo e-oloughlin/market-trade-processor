@@ -3,8 +3,9 @@ const expect = chai.expect;
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
 const currencies = require('country-data').currencies;
+const countries = require('country-data').countries;
 const Message = require('../model/message');
-const Errors = require('../config/errors').get('model').Message;
+const Errors = require('../config/errors').get('model');
 
 // A valid message object
 const data = {
@@ -50,7 +51,6 @@ describe('Message', () => {
 
                 expect(result).to.be.an('object');
                 expect(result).to.have.property('errors');
-
             }).then(() => {
                 /**
                  * Then, verify good data will pass validation
@@ -89,8 +89,7 @@ describe('Message', () => {
                 expect(result).to.be.an('object');
                 expect(result).to.have.property('errors');
                 expect(result.errors).to.have.property('currencyFrom');
-                expect(result.errors.currencyFrom.message).to.equal(Errors.currencyFrom);
-
+                expect(result.errors.currencyFrom.message).to.equal(Errors.Message.currencyFrom);
             }).then(() => {
                 /**
                  * Then, verify good data will pass validation
@@ -131,8 +130,7 @@ describe('Message', () => {
                 expect(result).to.be.an('object');
                 expect(result).to.have.property('errors');
                 expect(result.errors).to.have.property('currencyTo');
-                expect(result.errors.currencyTo.message).to.equal(Errors.currencyTo);
-
+                expect(result.errors.currencyTo.message).to.equal(Errors.Message.currencyTo);
             }).then(() => {
                 /**
                  * Then, verify good data will pass validation
@@ -241,6 +239,49 @@ describe('Message', () => {
                  * Then, verify good data will pass validation
                  */
                 const msg = Object.assign({}, data, { rate: 0.89 });
+
+                new Message(msg).save((err, message) => {
+                    expect(err).to.be.null;
+                    expect(message).to.be.an('object');
+                    expect(message).to.have.property('_id');
+
+                    done();
+                });
+            });
+        });
+    });
+
+    describe('originatingCountry', () => {
+        it('should be a valid country code', (done) => {
+            /**
+             * First, verify bad data will fail validation
+             */
+            const testCodes = [false, null, 'KEYBOARD'];
+
+            Promise.all(testCodes.map((code) => {
+                const msg = Object.assign({}, data, {
+                    originatingCountry: code
+                });
+
+                return new Message(msg).save().reflect();
+            })).each((inspection) => {
+                const result = inspection.reason();
+
+                expect(result).to.be.an('object');
+                expect(result).to.have.nested.property('errors.originatingCountry.message');
+                expect(result.errors.originatingCountry.message).to.be.oneOf([
+                    Errors.general.requiredProperty('originatingCountry'),
+                    Errors.Message.originatingCountry
+                ]);
+            }).then(() => {
+                /**
+                 * Then, verify good data will pass validation
+                 */
+                const validCountryCode = countries[Object.keys(countries)[100]].alpha2; // Random valid country code
+
+                const msg = Object.assign({}, data, {
+                    originatingCountry: validCountryCode
+                });
 
                 new Message(msg).save((err, message) => {
                     expect(err).to.be.null;
