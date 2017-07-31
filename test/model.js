@@ -87,6 +87,7 @@ describe('Message', () => {
                 const result = inspection.reason();
 
                 expect(result).to.be.an('object');
+                expect(result).to.have.property('errors');
                 expect(result.errors).to.have.property('currencyFrom');
                 expect(result.errors.currencyFrom.message).to.equal(Errors.currencyFrom);
 
@@ -128,6 +129,7 @@ describe('Message', () => {
                 const result = inspection.reason();
 
                 expect(result).to.be.an('object');
+                expect(result).to.have.property('errors');
                 expect(result.errors).to.have.property('currencyTo');
                 expect(result.errors.currencyTo.message).to.equal(Errors.currencyTo);
 
@@ -154,15 +156,28 @@ describe('Message', () => {
 
     describe('amountSell', () => {
         it('should be a valid number', (done) => {
-            const msg = Object.assign({}, data, {
-                amountSell: 'twentysix',
-            });
+            const testAmounts = [false, null, 'twenty six'];
 
-            new Message(msg).save((err, message) => {
-                expect(err).to.be.an('object');
-                expect(err.errors).to.have.property('amountSell');
+            Promise.all(testAmounts.map((amountSell) => {
+                const msg = Object.assign({}, data, { amountSell });
 
-                done();
+                return new Message(msg).save().reflect();
+            })).each((inspection) => {
+                const result = inspection.reason();
+
+                expect(result).to.be.an('object');
+                expect(result).to.have.property('errors');
+            }).then(() => {
+                // Test good data here
+                const msg = Object.assign({}, data, { amountSell: 45.78 });
+
+                new Message(msg).save((err, message) => {
+                    expect(err).to.be.null;
+                    expect(message).to.be.an('object');
+                    expect(message).to.have.property('_id');
+
+                    done();
+                });
             });
         });
     });
