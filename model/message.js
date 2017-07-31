@@ -8,7 +8,13 @@ const Errors = require('../config/errors').get('model').Message;
 module.exports = mongoose.model('Message', new Schema({
     userId: {
         type: Number,
-        required: true
+        required: true,
+        validate: {
+            validator: (num) => {
+                return num % 1 === 0;
+            },
+            message: Errors.userId
+        }
     },
     currencyFrom: {
         type: String,

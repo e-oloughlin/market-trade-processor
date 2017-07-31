@@ -35,11 +35,11 @@ describe('Message', () => {
     });
 
     describe('userId', () => {
-        it('should be a number', (done) => {
+        it('should be a valid integer', (done) => {
             /**
              * First, verify bad data will fail validation
              */
-            const testIds = ['fifty six', null];
+            const testIds = ['fifty six', null, 78.456];
 
             Promise.all(testIds.map((userId) => {
                 const msg = Object.assign({}, data, { userId });
