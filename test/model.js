@@ -182,6 +182,34 @@ describe('Message', () => {
         });
     });
 
+    describe('amountBuy', () => {
+        it('should be a valid number', (done) => {
+            const testAmounts = [false, null, 'fourty two'];
+
+            Promise.all(testAmounts.map((amountBuy) => {
+                const msg = Object.assign({}, data, { amountBuy });
+
+                return new Message(msg).save().reflect();
+            })).each((inspection) => {
+                const result = inspection.reason();
+
+                expect(result).to.be.an('object');
+                expect(result).to.have.property('errors');
+            }).then(() => {
+                // Test good data here
+                const msg = Object.assign({}, data, { amountBuy: 89.544 });
+
+                new Message(msg).save((err, message) => {
+                    expect(err).to.be.null;
+                    expect(message).to.be.an('object');
+                    expect(message).to.have.property('_id');
+
+                    done();
+                });
+            });
+        });
+    });
+
     describe('Valid data', () => {
         it('should save successfully', (done) => {
             new Message(data).save((err, message) => {

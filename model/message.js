@@ -48,7 +48,13 @@ module.exports = mongoose.model('Message', new Schema({
     },
     amountBuy: {
         type: Number,
-        required: true
+        required: true,
+        validate: {
+            validator: (num) => {
+                // Prevent the summission of false as a property value
+                return typeof num === 'number' && num >= 1;
+            }
+        }
     },
     rate: {
         type: Number,
