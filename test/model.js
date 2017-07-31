@@ -5,7 +5,11 @@ const Promise = require('bluebird');
 const currencies = require('country-data').currencies;
 const countries = require('country-data').countries;
 const Message = require('../model/message');
+const config = require('../config/app').get(process.env.NODE_ENV);
 const Errors = require('../config/errors').get('model');
+
+// Set bluebird as mongoose's promise utility
+mongoose.Promise = Promise;
 
 // A valid message object
 const data = {
@@ -23,7 +27,7 @@ describe('Message', () => {
      * Set up DB connection
      */
     before((done) => {
-        mongoose.connect('mongodb://127.0.01/market-trade-test-db', {
+        mongoose.connect(config.database, {
             useMongoClient: true
         });
 
@@ -127,8 +131,7 @@ describe('Message', () => {
                 const result = inspection.reason();
 
                 expect(result).to.be.an('object');
-                expect(result).to.have.property('errors');
-                expect(result.errors).to.have.property('currencyTo');
+                expect(result).to.have.nested.property('errors.currencyTo.message');
                 expect(result.errors.currencyTo.message).to.equal(Errors.Message.currencyTo);
             }).then(() => {
                 /**
@@ -312,6 +315,7 @@ describe('Message', () => {
     describe('Valid data', () => {
         it('should save successfully', (done) => {
             new Message(data).save((err, message) => {
+                expect(err).to.be.null;
                 expect(message).to.be.an('object');
 
                 done();

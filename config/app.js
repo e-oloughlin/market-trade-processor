@@ -1,4 +1,4 @@
-let config = {
+const config = {
     development: {
         database: process.env.MONGODB_URI || 'mongodb://127.0.01/market-trade-db'
     },
