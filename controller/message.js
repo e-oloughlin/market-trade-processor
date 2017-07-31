@@ -10,5 +10,15 @@ module.exports = {
 
             res.json(messages);
         });
+    },
+    /*
+     * GET /api/message/:id route to retrieve a single message
+     */
+    GetMessage: (req, res) => {
+        Message.findById(req.params.id, (error, message) => {
+            if(error) return res.json(error);
+
+            res.json(message);
+        });
     }
 };

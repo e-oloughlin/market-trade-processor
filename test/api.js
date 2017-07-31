@@ -74,6 +74,46 @@ describe('REST API', () => {
     });
 
     /**
+     * GET /api/message/:id
+     */
+    describe('GET /api/message/:id', () => {
+        let messageId;
+
+        /**
+         * Create a new DB entry
+         */
+        before((done) => {
+            const data = Object.assign({}, mockMessage);
+
+            new Message(data).save((error, message) => {
+                if(error) throw error;
+
+                messageId = message._id;
+
+                done();
+            });
+        });
+
+        /**
+         * Then, verify it can be returned from the API
+         */
+        it('should return a message by its id property', (done) => {
+            chai.request(app)
+            .get('/api/message/'+messageId)
+            .end((error, response) => {
+                expect(error).to.be.null;
+                expect(response).to.have.status(200);
+                expect(response).to.have.headers;
+
+                expect(response.body).to.be.an('object');
+                expect(response.body).to.include(mockMessage);
+
+                done();
+            });
+        });
+    });
+
+    /**
      * Close DB connection
      */
     after((done) => {

@@ -14,7 +14,7 @@ mongoose.Promise = Promise;
 // A valid message object
 let data = require('../mock/data').message;
 
-describe('Message', () => {
+describe('MODEL: Message', () => {
     /**
      * Set up DB connection
      */
