@@ -114,6 +114,26 @@ describe('REST API', () => {
     });
 
     /**
+     * POST /api/message
+     */
+    /*describe('POST /api/message', () => {
+        it('should not accept an invalid userId', (done) => {
+            const testIds = [false, ]
+
+            let data = Object.assign({}, mockMessage, {
+                userId: false
+            });
+
+            chai.request(app)
+                .post('/api/message')
+                .send(todo)
+                .end((err, res) => {
+
+                })
+        });
+    });*/
+
+    /**
      * Close DB connection
      */
     after((done) => {

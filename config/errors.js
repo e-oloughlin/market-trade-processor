@@ -3,6 +3,9 @@ const Errors = {
         general: {
             requiredProperty: (property) => {
                 return `Path \`${property}\` is required.`
+            },
+            typeCast: (type, value, property) => {
+                return `Cast to ${type} failed for value "${value}" at path "${property}"`;
             }
         },
         Message: {
