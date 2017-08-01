@@ -6,7 +6,8 @@ const MessageController = require('../controller/message');
  * REST API Route
  */
 router.route('/message')
-    .get(MessageController.GetMessages);
+    .get(MessageController.GetMessages)
+    .post(MessageController.CreateMessage)
 
 router.route('/message/:id')
     .get(MessageController.GetMessage);

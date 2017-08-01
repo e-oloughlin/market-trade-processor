@@ -20,5 +20,20 @@ module.exports = {
 
             res.json(message);
         });
+    },
+    /*
+     * POST /api/message route to create a message
+     */
+    CreateMessage: (req, res) => {
+        let message = new Message(req.body);
+
+        message.save((error, message) => {
+            if(error) return res.json(error);
+
+            res.json({
+                message: 'Message saved',
+                object: message
+            });
+        });
     }
 };

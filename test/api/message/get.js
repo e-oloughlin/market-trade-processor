@@ -1,11 +1,13 @@
-const config = require('../config/app').get(process.env.NODE_ENV);
+const config = require('../../../config/app').get(process.env.NODE_ENV);
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const expect = chai.expect;
-const Message = require('../model/message');
-const app = require('../app');
+const assert = chai.assert;
+const Errors = require('../../../config/errors').get('model');
+const Message = require('../../../model/message');
+const app = require('../../../app');
 
 chai.use(chaiHttp);
 
@@ -13,7 +15,7 @@ chai.use(chaiHttp);
 mongoose.Promise = Promise;
 
 // A sample plain message object
-const mockMessage = require('../mock/data').message;
+const mockMessage = require('../../../mock/data').message;
 
 /**
  * REST API Tests
@@ -112,26 +114,6 @@ describe('REST API', () => {
             });
         });
     });
-
-    /**
-     * POST /api/message
-     */
-    /*describe('POST /api/message', () => {
-        it('should not accept an invalid userId', (done) => {
-            const testIds = [false, ]
-
-            let data = Object.assign({}, mockMessage, {
-                userId: false
-            });
-
-            chai.request(app)
-                .post('/api/message')
-                .send(todo)
-                .end((err, res) => {
-
-                })
-        });
-    });*/
 
     /**
      * Close DB connection
