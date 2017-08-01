@@ -19,7 +19,8 @@ const data = {
     amountSell: 1000,
     amountBuy: 747.10,
     rate: 0.7471,
-    originatingCountry: 'FR'
+    originatingCountry: 'FR',
+    timePlaced : '24-JAN-15 10:27:44'
 };
 
 describe('Message', () => {
@@ -298,16 +299,28 @@ describe('Message', () => {
 
     // Prove the timePlaced plugin is working
     describe('timePlaced', () => {
-        it('should be automatically added to every model', (done) => {
-            const msg = Object.assign({}, data);
+        it('should be a date string with the format: DD-MMM-YY HH:mm:ss', (done) => {
+            new Promise((resolve, reject) => {
+                new Message(Object.assign({}, data, {
+                    timePlaced: '56-JAN-15 70:27:44'
+                })).save((error, message) => {
+                    expect(error).be.an('object')
+                        .that.has.nested.property('errors.timePlaced.message')
+                        .that.equals(Errors.Message.timePlaced);
 
-            new Message(msg).save((err, message) => {
-                expect(err).to.be.null;
-                expect(message).to.be.an('object');
-                expect(message).to.have.property('timePlaced');
-                expect(message.timePlaced).to.be.an.instanceof(Date);
+                    resolve();
+                });
+            })
+            .then(() => {
+                new Message(Object.assign({}, data, {
+                    timePlaced: '01-OCT-20 23:27:02'
+                })).save((error, message) => {
+                    expect(error).be.null;
+                    expect(message).to.be.an('object')
+                        .that.has.property('userId', data.userId);
 
-                done();
+                    done();
+                });
             });
         });
     });

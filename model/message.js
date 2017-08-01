@@ -2,7 +2,6 @@ const _ = require('lodash');
 const moment = require('moment');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const timePlaced = require('./plugins/time-placed');
 const currencies = require('country-data').currencies;
 const countries = require('country-data').countries;
 const Errors = require('../config/errors').get('model').Message;
@@ -68,6 +67,19 @@ const Message = new Schema({
             }
         }
     },
+    timePlaced: {
+        type: String,
+        required: true,
+        validate: {
+            validator: (date) => {
+                // Regex for date format: DD-MMM-YY HH:mm:ss
+                let regex = /^(0[1-9]|[1-2]\d|3[0-1])-([A-Z]{3})-(\d{2})\s(0[0-9]|1\d|2[0-3]):([0-5]\d):([0-5]\d)/;
+
+                return typeof date === 'string' && regex.test(date);
+            },
+            message: Errors.timePlaced
+        }
+    },
     originatingCountry: {
         type: String,
         required: true,
@@ -83,7 +95,5 @@ const Message = new Schema({
         }
     }
 });
-
-Message.plugin(timePlaced);
 
 module.exports = mongoose.model('Message', Message);
