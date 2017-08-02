@@ -125,24 +125,31 @@ describe('REST API', () => {
             let testIds = [false, 'fifty six', null, 78.456];
 
             Promise.all(testIds.map((userId) => {
-                let data = Object.assign({}, mockMessage, { userId });
+                let data = Object.assign({}, mockMessage, {
+                    userId
+                });
 
                 return chai.request(app).post('/api/message').send(data);
             }))
             .each((response) => {
                 expect(response).to.have.status(200);
                 expect(response).to.have.headers;
-                expect(response).to.be.an('object').that.has.property('body');
-                expect(response.body).to.have.nested.property('errors.userId.message');
 
-                expect(response.body.errors.userId.message)
-                    .to.be.oneOf([
+                expect(response).to.be.an('object').that.has.property('body');
+                expect(response.body).to.be.an('object')
+                    .that.has.property('status', 'Message save failed');
+
+                expect(response.body)
+                    .to.have.nested.property('errors.userId')
+                    .that.is.oneOf([
                         Errors.Message.userId,
                         Errors.general.requiredProperty('userId'),
                         Errors.general.typeCast('Number', 'fifty six', 'userId')
                     ]);
             })
-            .then(done());
+            .then(function fulfilled(result) {
+                done();
+            });
         });
 
         /**
@@ -159,11 +166,18 @@ describe('REST API', () => {
             .each((response) => {
                 expect(response).to.have.status(200);
                 expect(response).to.have.headers;
+
                 expect(response).to.be.an('object').that.has.property('body');
-                expect(response.body).to.have.nested.property('errors.currencyFrom.message')
+                expect(response.body).to.be.an('object')
+                    .that.has.property('status', 'Message save failed');
+
+                expect(response.body)
+                    .to.have.nested.property('errors.currencyFrom')
                     .that.equals(Errors.Message.currencyFrom);
             })
-            .then(done());
+            .then(function fulfilled(result) {
+                done();
+            });
         });
 
         /**
@@ -180,11 +194,18 @@ describe('REST API', () => {
             .each((response) => {
                 expect(response).to.have.status(200);
                 expect(response).to.have.headers;
+
                 expect(response).to.be.an('object').that.has.property('body');
-                expect(response.body).to.have.nested.property('errors.currencyTo.message')
+                expect(response.body).to.be.an('object')
+                    .that.has.property('status', 'Message save failed');
+
+                expect(response.body)
+                    .to.have.nested.property('errors.currencyTo')
                     .that.equals(Errors.Message.currencyTo);
             })
-            .then(done());
+            .then(function fulfilled(result) {
+                done();
+            });
         });
 
         /**
@@ -201,15 +222,22 @@ describe('REST API', () => {
             .each((response) => {
                 expect(response).to.have.status(200);
                 expect(response).to.have.headers;
+
                 expect(response).to.be.an('object').that.has.property('body');
-                expect(response.body).to.have.nested.property('errors.amountSell.message')
+                expect(response.body).to.be.an('object')
+                    .that.has.property('status', 'Message save failed');
+
+                expect(response.body)
+                    .to.have.nested.property('errors.amountSell')
                     .that.is.oneOf([
                         Errors.Message.amountSell,
                         Errors.general.requiredProperty('amountSell'),
                         Errors.general.typeCast('Number', 'twenty six', 'amountSell')
                     ]);
             })
-            .then(done());
+            .then(function fulfilled(result) {
+                done();
+            });
         });
 
         /**
@@ -226,15 +254,22 @@ describe('REST API', () => {
             .each((response) => {
                 expect(response).to.have.status(200);
                 expect(response).to.have.headers;
+
                 expect(response).to.be.an('object').that.has.property('body');
-                expect(response.body).to.have.nested.property('errors.amountBuy.message')
+                expect(response.body).to.be.an('object')
+                    .that.has.property('status', 'Message save failed');
+
+                expect(response.body)
+                    .to.have.nested.property('errors.amountBuy')
                     .that.is.oneOf([
                         Errors.Message.amountBuy,
                         Errors.general.requiredProperty('amountBuy'),
                         Errors.general.typeCast('Number', 'fourty two', 'amountBuy')
                     ]);
             })
-            .then(done());
+            .then(function fulfilled(result) {
+                done();
+            });
         });
 
         /**
@@ -251,15 +286,22 @@ describe('REST API', () => {
             .each((response) => {
                 expect(response).to.have.status(200);
                 expect(response).to.have.headers;
+
                 expect(response).to.be.an('object').that.has.property('body');
-                expect(response.body).to.have.nested.property('errors.rate.message')
+                expect(response.body).to.be.an('object')
+                    .that.has.property('status', 'Message save failed');
+
+                expect(response.body)
+                    .to.have.nested.property('errors.rate')
                     .that.is.oneOf([
                         Errors.Message.rate,
                         Errors.general.requiredProperty('rate'),
                         Errors.general.typeCast('Number', 'ten', 'rate')
                     ]);
             })
-            .then(done());
+            .then(function fulfilled(result) {
+                done();
+            });
         });
 
         /**
@@ -276,14 +318,21 @@ describe('REST API', () => {
             .each((response) => {
                 expect(response).to.have.status(200);
                 expect(response).to.have.headers;
+
                 expect(response).to.be.an('object').that.has.property('body');
-                expect(response.body).to.have.nested.property('errors.originatingCountry.message')
+                expect(response.body).to.be.an('object')
+                    .that.has.property('status', 'Message save failed');
+
+                expect(response.body)
+                    .to.have.nested.property('errors.originatingCountry')
                     .that.is.oneOf([
                         Errors.Message.originatingCountry,
                         Errors.general.requiredProperty('originatingCountry')
                     ]);
             })
-            .then(done());
+            .then(function fulfilled(result) {
+                done();
+            });
         });
 
         /**
@@ -296,7 +345,7 @@ describe('REST API', () => {
                 expect(error).to.be.null;
 
                 expect(response).to.be.an('object')
-                    .that.has.nested.property('body.message')
+                    .that.has.nested.property('body.status')
                     .that.equals('Message saved');
 
                 expect(response.body).to.have.nested.property('object.userId')
@@ -349,7 +398,7 @@ describe('REST API', () => {
                         expect(error).to.be.null;
                         expect(res).to.have.status(200);
                         expect(res).to.have.headers;
-                        expect(res.body).to.be.an('object').that.has.nested.property('message', 'Message updated');
+                        expect(res.body).to.be.an('object').that.has.nested.property('status', 'Message updated');
 
                         expect(res.body).to.have.nested.property('object.userId', mockMessage.userId);
                         expect(res.body).to.have.nested.property('object.currencyTo', newCurrency);
@@ -388,7 +437,7 @@ describe('REST API', () => {
                         expect(res).to.have.status(200);
                         expect(res).to.have.headers;
                         expect(res.body).to.be.an('object')
-                            .that.has.property('message', 'Message deleted');
+                            .that.has.property('status', 'Message deleted');
 
                         expect(res.body).to.have.nested.property('result.ok', 1);
 
