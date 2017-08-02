@@ -35,5 +35,22 @@ module.exports = {
                 object: message
             });
         });
+    },
+    /*
+     * PUT /api/message route to update a message
+     */
+    UpdateMessage: (req, res) => {
+        Message.findById(req.params.id, (error, message) => {
+            if(error) return res.json(error);
+
+            Object.assign(message, req.body).save((err, message) => {
+                if(err) return res.json(err);
+
+                res.json({
+                    message: 'Message updated',
+                    object: message
+                });
+            });
+        });
     }
 };

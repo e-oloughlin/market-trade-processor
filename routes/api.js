@@ -10,6 +10,7 @@ router.route('/message')
     .post(MessageController.CreateMessage)
 
 router.route('/message/:id')
-    .get(MessageController.GetMessage);
+    .get(MessageController.GetMessage)
+    .put(MessageController.UpdateMessage);
 
 module.exports = router;

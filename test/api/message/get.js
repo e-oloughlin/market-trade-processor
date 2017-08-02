@@ -4,7 +4,6 @@ const Promise = require('bluebird');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const expect = chai.expect;
-const assert = chai.assert;
 const Errors = require('../../../config/errors').get('model');
 const Message = require('../../../model/message');
 const app = require('../../../app');
