@@ -12,7 +12,7 @@ const Message = new Schema({
         required: true,
         validate: {
             validator: (num) => {
-                return num % 1 === 0;
+                return num > 0 && num % 1 === 0;
             },
             message: Errors.userId
         }
@@ -44,7 +44,8 @@ const Message = new Schema({
             validator: (amount) => {
                 // Prevent the type casting of a submitted falsey value to 0
                 return typeof amount === 'number' && amount > 0;
-            }
+            },
+            message: Errors.amountSell
         }
     },
     amountBuy: {
@@ -54,7 +55,8 @@ const Message = new Schema({
             validator: (amount) => {
                 // Prevent the type casting of a submitted falsey value to 0
                 return typeof amount === 'number' && amount > 0;
-            }
+            },
+            message: Errors.amountBuy
         }
     },
     rate: {
@@ -64,7 +66,8 @@ const Message = new Schema({
             validator: (rate) => {
                 // Prevent the type casting of a submitted falsey value to 0
                 return typeof rate === 'number' && rate > 0;
-            }
+            },
+            message: Errors.rate
         }
     },
     timePlaced: {

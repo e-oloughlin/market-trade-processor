@@ -4,26 +4,17 @@ const mongoose = require('mongoose');
 const Promise = require('bluebird');
 const currencies = require('country-data').currencies;
 const countries = require('country-data').countries;
-const Message = require('../model/message');
-const config = require('../config/app').get(process.env.NODE_ENV);
-const Errors = require('../config/errors').get('model');
+const Message = require('../../model/message');
+const config = require('../../config/app').get(process.env.NODE_ENV);
+const Errors = require('../../config/errors').get('model');
 
 // Set bluebird as mongoose's promise utility
 mongoose.Promise = Promise;
 
 // A valid message object
-const data = {
-    userId: 134256,
-    currencyFrom: 'EUR',
-    currencyTo: 'GBP',
-    amountSell: 1000,
-    amountBuy: 747.10,
-    rate: 0.7471,
-    originatingCountry: 'FR',
-    timePlaced : '24-JAN-15 10:27:44'
-};
+const data = require('../../mock/data').message;
 
-describe('Message', () => {
+describe('MODEL: Message', () => {
     /**
      * Set up DB connection
      */
@@ -40,26 +31,32 @@ describe('Message', () => {
     });
 
     describe('userId', () => {
-        it('should be a valid integer', (done) => {
+        it('should be a valid integer and not zero', (done) => {
             /**
              * First, verify bad data will fail validation
              */
-            const testIds = ['fifty six', null, 78.456];
+            const testIds = [false, 'fifty six', null, 78.456];
 
             Promise.all(testIds.map((userId) => {
                 const msg = Object.assign({}, data, { userId });
 
                 return new Message(msg).save().reflect();
             })).each((inspection) => {
-                const result = inspection.reason();
+                let result = inspection.reason();
 
                 expect(result).to.be.an('object');
-                expect(result).to.have.property('errors');
+                expect(result).to.have.nested.property('errors.userId.message');
+
+                expect(result.errors.userId.message).to.be.oneOf([
+                    Errors.Message.userId,
+                    Errors.general.requiredProperty('userId'),
+                    Errors.general.typeCast('Number', 'fifty six', 'userId')
+                ]);
             }).then(() => {
                 /**
                  * Then, verify good data will pass validation
                  */
-                const msg = Object.assign({}, data, {
+                let msg = Object.assign({}, data, {
                     userId: 457
                 });
 
