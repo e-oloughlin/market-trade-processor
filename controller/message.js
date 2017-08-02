@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const Message = require('../model/message');
 
 module.exports = {
@@ -15,8 +16,8 @@ module.exports = {
      * GET /api/message/:id route to retrieve a single message
      */
     GetMessage: (req, res) => {
-        Message.findById(req.params.id, (error, message) => {
-            if(error) return res.json(error);
+        Message.findById(req.params.id, (err, message) => {
+            if(err) return res.json(err);
 
             res.json(message);
         });
@@ -27,11 +28,22 @@ module.exports = {
     CreateMessage: (req, res) => {
         let message = new Message(req.body);
 
-        message.save((error, message) => {
-            if(error) return res.json(error);
+        message.save((err, message) => {
+            if(err) {
+                let errors = {};
+
+                _.forIn(err.errors, (value, key) => {
+                    errors[key] = value.message;
+                });
+
+                return res.json({
+                    status: 'Message save failed',
+                    errors
+                });
+            }
 
             res.json({
-                message: 'Message saved',
+                status: 'Message saved',
                 object: message
             });
         });
@@ -40,14 +52,14 @@ module.exports = {
      * PUT /api/message route to update a message
      */
     UpdateMessage: (req, res) => {
-        Message.findById(req.params.id, (error, message) => {
-            if(error) return res.json(error);
+        Message.findById(req.params.id, (err, message) => {
+            if(err) return res.json(err);
 
             Object.assign(message, req.body).save((err, message) => {
                 if(err) return res.json(err);
 
                 res.json({
-                    message: 'Message updated',
+                    status: 'Message updated',
                     object: message
                 });
             });
@@ -59,7 +71,7 @@ module.exports = {
     RemoveMessage: (req, res) => {
         Message.remove({_id: req.params.id}, (err, result) => {
             res.json({
-                message: 'Message deleted',
+                status: 'Message deleted',
                 result
             });
         });
