@@ -4,15 +4,15 @@ const mongoose = require('mongoose');
 const Promise = require('bluebird');
 const currencies = require('country-data').currencies;
 const countries = require('country-data').countries;
-const Message = require('../../model/message');
-const config = require('../../config/app').get(process.env.NODE_ENV);
-const Errors = require('../../config/errors').get('model');
+const Message = require('../../../model/message');
+const config = require('../../../config/app').get(process.env.NODE_ENV);
+const Errors = require('../../../config/errors').get('model');
 
 // Set bluebird as mongoose's promise utility
 mongoose.Promise = Promise;
 
 // A valid message object
-const data = require('../../mock/data').message;
+const data = require('../../../mock/data').message;
 
 describe('MODEL: Message', () => {
     /**
