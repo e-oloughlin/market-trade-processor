@@ -7,7 +7,7 @@ const MessageController = require('../controller/message');
  */
 router.route('/message')
     .get(MessageController.GetMessages)
-    .post(MessageController.CreateMessage)
+    .post(MessageController.CreateMessage);
 
 router.route('/message/:id')
     .get(MessageController.GetMessage)

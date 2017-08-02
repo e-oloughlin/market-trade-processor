@@ -19,7 +19,7 @@ const mockMessage = require('../../../mock/data').message;
 /**
  * REST API Tests
  */
-describe('', () => {
+describe('REST API', () => {
     /**
      * Set up DB connection
      */
@@ -33,6 +33,84 @@ describe('', () => {
         // Clear the database before testing
         mongoose.connection.once('open', () => {
             Message.remove({}).then(done());
+        });
+    });
+
+    /**
+     * GET /api/message
+     */
+    describe('GET /api/message', () => {
+        /**
+         * Create 2 new DB entries
+         */
+        const rates = [0.898, 0.924];
+
+        before((done) => {
+            Promise.all(rates.map((rate) => {
+                const data = Object.assign({}, mockMessage, { rate });
+
+                return new Message(data).save().reflect();
+            }))
+            .then(done());
+        });
+
+        it('should return all messages', (done) => {
+            /**
+             * Then, verify they are returned from the API
+             */
+            chai.request(app).get('/api/message')
+                .end((error, response) => {
+                    expect(error).to.be.null;
+                    expect(response).to.have.status(200);
+                    expect(response).to.have.headers;
+
+                    expect(response.body).to.be.an('array');
+                    expect(response.body).to.have.lengthOf(2);
+                    expect(response.body[0]).to.have.property('rate').that.is.oneOf(rates);
+                    expect(response.body[1]).to.have.property('rate').that.is.oneOf(rates);
+
+                    done();
+                });
+        });
+    });
+
+    /**
+     * GET /api/message/:id
+     */
+    describe('GET /api/message/:id', () => {
+        let messageId;
+
+        /**
+         * Create a new DB entry
+         */
+        before((done) => {
+            const data = Object.assign({}, mockMessage);
+
+            new Message(data).save((error, message) => {
+                if(error) throw error;
+
+                messageId = message._id;
+
+                done();
+            });
+        });
+
+        /**
+         * Then, verify it can be returned from the API
+         */
+        it('should return a message by its id property', (done) => {
+            chai.request(app)
+            .get('/api/message/'+messageId)
+            .end((error, response) => {
+                expect(error).to.be.null;
+                expect(response).to.have.status(200);
+                expect(response).to.have.headers;
+
+                expect(response.body).to.be.an('object');
+                expect(response.body).to.include(mockMessage);
+
+                done();
+            });
         });
     });
 
@@ -225,6 +303,108 @@ describe('', () => {
                     .that.equals(data.userId);
 
                 done();
+            });
+        });
+    });
+
+    describe('PUT /api/message/:id', () => {
+        let messageId;
+        let newCurrency = 'AUD';
+        /**
+         * Create a new DB entry
+         */
+        before((done) => {
+            const data = Object.assign({}, mockMessage);
+
+            new Message(data).save((error, message) => {
+                if(error) throw error;
+
+                messageId = message._id;
+
+                done();
+            });
+        });
+
+        it('should update a message successfully', (done) => {
+            new Promise((resolve, reject) => {
+                chai.request(app)
+                    .put('/api/message/'+messageId)
+                    .send({currencyTo: 'LOL'})
+                    .end((error, res) => {
+                        expect(error).to.be.null;
+                        expect(res).to.have.status(200);
+                        expect(res).to.have.headers;
+
+                        expect(res.body).to.be.an('object')
+                            .that.has.nested.property('errors.currencyTo.message')
+                                .that.equals(Errors.Message.currencyTo);
+
+                        resolve();
+                    });
+            }).then(() => {
+                chai.request(app)
+                    .put('/api/message/'+messageId)
+                    .send({currencyTo: newCurrency})
+                    .end((error, res) => {
+                        expect(error).to.be.null;
+                        expect(res).to.have.status(200);
+                        expect(res).to.have.headers;
+                        expect(res.body).to.be.an('object').that.has.nested.property('message', 'Message updated');
+
+                        expect(res.body).to.have.nested.property('object.userId', mockMessage.userId);
+                        expect(res.body).to.have.nested.property('object.currencyTo', newCurrency);
+
+                        done();
+                    });
+            });
+        });
+    });
+
+    describe('DELETE /api/message/:id', () => {
+        let messageId;
+
+        /**
+         * Add a new todo item to the database before testing it
+         */
+        before((done) => {
+            let message = new Message(mockMessage);
+
+            // Add a new entry
+            message.save((err, message) => {
+                if(err) throw err;
+
+                messageId = message._id;
+
+                done();
+            });
+        });
+
+        it('should delete a message successfully', (done) => {
+            new Promise((resolve, reject) => {
+                chai.request(app)
+                    .delete('/api/message/'+messageId)
+                    .end((err, res) => {
+                        expect(err).to.be.null;
+                        expect(res).to.have.status(200);
+                        expect(res).to.have.headers;
+                        expect(res.body).to.be.an('object')
+                            .that.has.property('message', 'Message deleted');
+
+                        expect(res.body).to.have.nested.property('result.ok', 1);
+
+                        resolve();
+                    });
+            }).then(() => {
+                chai.request(app)
+                    .get('/api/message/'+messageId)
+                    .end((error, response) => {
+                        expect(error).to.be.null;
+                        expect(response).to.have.status(200);
+                        expect(response).to.have.headers;
+                        expect(response.body).to.be.null;
+
+                        done();
+                    });
             });
         });
     });
