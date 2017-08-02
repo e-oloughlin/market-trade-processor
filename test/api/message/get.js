@@ -19,7 +19,7 @@ const mockMessage = require('../../../mock/data').message;
 /**
  * REST API Tests
  */
-describe('REST API', () => {
+describe('', () => {
     /**
      * Set up DB connection
      */

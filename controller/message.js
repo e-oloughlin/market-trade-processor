@@ -52,5 +52,16 @@ module.exports = {
                 });
             });
         });
+    },
+    /*
+     * DELETE /api/message route to delete a message
+     */
+    RemoveMessage: (req, res) => {
+        Message.remove({_id: req.params.id}, (err, result) => {
+            res.json({
+                message: 'Message deleted',
+                result
+            });
+        });
     }
 };

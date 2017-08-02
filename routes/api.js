@@ -11,6 +11,7 @@ router.route('/message')
 
 router.route('/message/:id')
     .get(MessageController.GetMessage)
-    .put(MessageController.UpdateMessage);
+    .put(MessageController.UpdateMessage)
+    .delete(MessageController.RemoveMessage);
 
 module.exports = router;
