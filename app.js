@@ -8,6 +8,8 @@ const apiRouter = require('./routes/api');
 const port = process.env.PORT || 3000;
 const app = express();
 
+const MessageController = require('./controller/message');
+
 // BodyParser Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -26,7 +28,13 @@ app.set('view engine', 'pug');
 
 // Main Page
 app.get('/', function (req, res) {
-    res.render('index');
+    const Message = require('./model/message');
+
+    Message.find({}, (err, messages) => {
+        if (err) return res.json(err);
+
+        res.render('index', { messages });
+    });
 });
 
 // API Routes
