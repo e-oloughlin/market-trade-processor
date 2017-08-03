@@ -1,0 +1,5 @@
+# Where bower components are installed
+lib
+
+## JS can be compiled during development & upon deployment
+*.js
