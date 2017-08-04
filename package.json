@@ -6,7 +6,8 @@
   "scripts": {
     "test": "NODE_ENV=test mocha",
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "postinstall": "bower install && gulp css && gulp js"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
     "pug": "^2.0.0-rc.3"
   },
   "devDependencies": {
+    "bower": "^1.8.0",
     "browser-sync": "^2.18.13",
     "chai": "^4.1.0",
     "chai-http": "^3.0.0",

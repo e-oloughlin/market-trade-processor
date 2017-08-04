@@ -1,19 +1,19 @@
 require.config({
     paths: {
         domReady: 'lib/domReady/domReady',
-        jquery: 'lib/jquery/dist/jquery'
+        jquery: 'lib/jquery/dist/jquery',
+        bsTab: 'lib/bootstrap/js/tab'
+    },
+    shim: {
+        'bsTab': {
+            deps: ['jquery']
+        }
     }
 });
 
 require([
     'domReady',
-    'jquery',
-    // 'util/pubsub',
-], function(domReady, $, pubSub) {
-
-    // When the DOM is ready
-    domReady(function () {
-        console.log('The DOM is ready!');
-    });
+    'bsTab'
+], function(domReady) {
 
 });

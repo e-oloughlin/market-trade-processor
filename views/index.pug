@@ -6,6 +6,26 @@ html.no-js
 
     body
 
-        include includes/table
+        div.container-fluid
+            div.row
+                include includes/navbar
+                    //- ul.nav.nav-pills
+                    //-     li.active
+                    //-         a(href="#message-list" aria-controls="message-list" data-toggle="pill") Messages
 
-        script(src="js/lib/requirejs/require.js" data-main="js/main")
+                    //-     li(role="presentation")
+                    //-         a(href="#map" aria-controls="map" data-toggle="pill") Map
+
+                    //-     li(role="presentation")
+                    //-         a(href="#insights" aria-controls="insights" data-toggle="pill") Insights
+
+                div.col-md-12
+                    div(class="tab-content")
+                        div#message-list.tab-pane.active(role="tabpanel")
+                            include includes/table
+                        div#map.tab-pane(role="tabpanel")
+                            h3 Map
+                        div#insights.tab-pane(role="tabpanel")
+                            h3 Insights
+
+        include includes/footer
