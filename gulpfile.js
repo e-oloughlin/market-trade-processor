@@ -1,6 +1,7 @@
 var gulp         = require('gulp'),
     path         = require('path'),
     gutil        = require('gulp-util'),
+    nodemon      = require('nodemon'),
     less         = require('gulp-less'),
     browserSync  = require('browser-sync'),
     autoprefixer = require('gulp-autoprefixer'),
@@ -45,10 +46,34 @@ gulp.task('js',function(){
     .pipe(gulp.dest('public/assets/js'))
 });
 
+gulp.task('browser-sync', ['nodemon'], function() {
+    browserSync.init(null, {
+        proxy: "http://localhost:3000",
+        files: ["public/**/*.*"],
+        browser: "google chrome",
+        port: 7000,
+    });
+});
+
+gulp.task('nodemon', function (cb) {
+    var started = false;
+
+    return nodemon({
+        script: 'app.js'
+    }).on('start', function () {
+        // to avoid nodemon being started multiple times
+        // thanks @matthisk
+        if (!started) {
+            cb();
+            started = true;
+        }
+    });
+});
+
 /**
  *  Default tasks
  */
-gulp.task('default', ['css', 'js'], function () {
+gulp.task('default', ['browser-sync', 'css', 'js'], function () {
     gulp.watch('src/less/**/*.less', ['css']);
     gulp.watch('src/js/**/*.js', ['js']);
 });
