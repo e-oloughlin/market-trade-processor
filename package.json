@@ -7,7 +7,7 @@
     "test": "NODE_ENV=test mocha",
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "postinstall": "bower install && gulp css && gulp js"
+    "postinstall": "bower install && gulp css && gulp js && gulp templates"
   },
   "repository": {
     "type": "git",

@@ -3,3 +3,6 @@ lib
 
 ## JS can be compiled during development & upon deployment
 *.js
+
+## templates can be compiled during development & upon deployment
+templates

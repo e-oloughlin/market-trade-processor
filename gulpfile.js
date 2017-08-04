@@ -36,44 +36,27 @@ gulp.task('css', function () {
  *  Javascript
  */
 gulp.task('js',function(){
-  gulp.src('src/js/**/*.js')
+  gulp.src('src/**/*.js')
     .pipe(sourcemaps.init())
-    .pipe(gulp.dest('public/assets/js'))
+    .pipe(gulp.dest('public/assets'))
     .pipe(uglify())
     .on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
     .pipe(rename({ suffix: '.min' }))
     .pipe(sourcemaps.write())
-    .pipe(gulp.dest('public/assets/js'))
+    .pipe(gulp.dest('public/assets'))
 });
 
-gulp.task('browser-sync', ['nodemon'], function() {
-    browserSync.init(null, {
-        proxy: "http://localhost:3000",
-        files: ["public/**/*.*"],
-        browser: "google chrome",
-        port: 7000,
-    });
-});
-
-gulp.task('nodemon', function (cb) {
-    var started = false;
-
-    return nodemon({
-        script: 'app.js'
-    }).on('start', function () {
-        // to avoid nodemon being started multiple times
-        // thanks @matthisk
-        if (!started) {
-            cb();
-            started = true;
-        }
-    });
+gulp.task('templates', () => {
+    gulp.src('src/js/templates/**/*.hbs')
+        .on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
+        .pipe(gulp.dest('public/assets/js/templates'));
 });
 
 /**
  *  Default tasks
  */
-gulp.task('default', ['browser-sync', 'css', 'js'], function () {
+gulp.task('default', ['css', 'js', 'templates'], function () {
     gulp.watch('src/less/**/*.less', ['css']);
-    gulp.watch('src/js/**/*.js', ['js']);
+    gulp.watch('src/**/*.js', ['js']);
+    gulp.watch('src/**/*.hbs', ['templates']);
 });

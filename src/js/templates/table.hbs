@@ -1,0 +1,30 @@
+<div class="table-responsive">
+    <table class="table table-striped table-hover table-bordered">
+        <thead>
+            <tr>
+                <th> User ID </th>
+                <th> Currency From </th>
+                <th> Currency To </th>
+                <th> Amount Sell </th>
+                <th> Amount Buy </th>
+                <th> Rate </th>
+                <th> Time Placed </th>
+                <th> Originating Country </th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each .}}
+                <tr>
+                    <td> {{userId}} </td>
+                    <td> {{currencyFrom}} </td>
+                    <td> {{currencyTo}} </td>
+                    <td> {{amountSell}} </td>
+                    <td> {{amountBuy}} </td>
+                    <td> {{rate}} </td>
+                    <td> {{timePlaced}} </td>
+                    <td> {{originatingCountry}} </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
