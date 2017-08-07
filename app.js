@@ -1,12 +1,19 @@
+const express = require('express');
+const app = express();
+const http = require('http').Server(app);
 const mongoose = require('mongoose');
 const bluebird = require('bluebird');
 const bodyParser = require('body-parser');
-const express = require('express');
 const path = require('path');
 const config = require('./config/app').get(process.env.NODE_ENV);
 const apiRouter = require('./routes/api');
 const port = process.env.PORT || 3000;
-const app = express();
+
+// Start socket.io
+require('./socket/index').listen(http);
+
+// Use bluebird for mongoose promises
+mongoose.Promise = bluebird;
 
 // Static File Configuration
 app.use('/css', express.static(path.join(__dirname, 'public/assets/css')));
@@ -31,19 +38,16 @@ app.get('/', function (req, res) {
 // API Routes
 app.use('/api', apiRouter);
 
-// Use bluebird for mongoose promises
-mongoose.Promise = bluebird;
-
 // If not in test mode
 if(process.env.NODE_ENV !== 'test') {
     mongoose.connect(config.database, {
         useMongoClient: true
     });
 
-    app.listen(port, () => {
+    http.listen(port, () => {
         console.log('Listening on port '+port);
     });
 }
 
-// For testing
-module.exports = app;
+// For API testing
+exports.app = app;

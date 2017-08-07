@@ -14,16 +14,7 @@
         </thead>
         <tbody>
             {{#each .}}
-                <tr>
-                    <td> {{userId}} </td>
-                    <td> {{currencyFrom}} </td>
-                    <td> {{currencyTo}} </td>
-                    <td> {{amountSell}} </td>
-                    <td> {{amountBuy}} </td>
-                    <td> {{rate}} </td>
-                    <td> {{timePlaced}} </td>
-                    <td> {{originatingCountry}} </td>
-                </tr>
+                {{> table-row}}
             {{/each}}
         </tbody>
     </table>
