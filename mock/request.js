@@ -17,7 +17,9 @@ function getRandomCountry() {
 }
 
 function getRandomCurrency() {
-    return _.sample(currencies).code;
+    return _.sample(_.reject(currencies, {
+        code: 'XXX'
+    })).code;
 }
 
 function getRandomFloat() {
@@ -53,7 +55,9 @@ module.exports = function(uri) {
     };
 
     request(options, function (error, response, body) {
-        if (!error && response.statusCode === 200) {
+        if (error) {
+            console.log(error);
+        } else if(!error && response.statusCode === 200) {
             console.log(body);
         }
     });

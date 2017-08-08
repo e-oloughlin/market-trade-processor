@@ -60,7 +60,7 @@ define('app/view/table-view', [
                 $row.removeClass('green-flash');
             }, 2000)
 
-            this.$el.animate({
+            this.$el.stop().animate({
                 scrollTop: this.$el.prop('scrollHeight')
             }, 750);
         }
