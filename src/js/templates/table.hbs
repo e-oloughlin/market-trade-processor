@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-striped table-hover table-bordered">
+    <table class="table table-live table-striped table-hover table-bordered">
         <thead>
             <tr>
                 <th> User ID </th>
@@ -14,16 +14,7 @@
         </thead>
         <tbody>
             {{#each .}}
-                <tr>
-                    <td> {{userId}} </td>
-                    <td> {{currencyFrom}} </td>
-                    <td> {{currencyTo}} </td>
-                    <td> {{amountSell}} </td>
-                    <td> {{amountBuy}} </td>
-                    <td> {{rate}} </td>
-                    <td> {{timePlaced}} </td>
-                    <td> {{originatingCountry}} </td>
-                </tr>
+                {{> table-row}}
             {{/each}}
         </tbody>
     </table>

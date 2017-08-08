@@ -6,7 +6,7 @@ const chaiHttp = require('chai-http');
 const expect = chai.expect;
 const Errors = require('../../../config/errors').get('model');
 const Message = require('../../../model/message');
-const app = require('../../../app');
+const app = require('../../../app').app;
 
 chai.use(chaiHttp);
 

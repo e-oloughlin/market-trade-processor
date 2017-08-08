@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const Message = require('../model/message');
+const pubsub = require('pubsub-js');
 
 module.exports = {
     /*
@@ -41,6 +42,9 @@ module.exports = {
                     errors
                 });
             }
+
+            // Announce the creation of a new message object
+            pubsub.publish('new-message', message);
 
             res.json({
                 status: 'Message saved',
