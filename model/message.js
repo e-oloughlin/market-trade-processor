@@ -22,7 +22,7 @@ const Message = new Schema({
         required: true,
         validate: {
             validator: (currency) => {
-                return _.isPlainObject(currencies[currency]) && currencies[currency].decimals !== null
+                return _.isPlainObject(currencies[currency]);
             },
             message: Errors.currencyFrom
         }
@@ -32,7 +32,7 @@ const Message = new Schema({
         required: true,
         validate: {
             validator: (currency) => {
-                return _.isPlainObject(currencies[currency]) && currencies[currency].decimals !== null
+                return _.isPlainObject(currencies[currency]);
             },
             message: Errors.currencyTo
         }
