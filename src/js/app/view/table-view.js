@@ -42,7 +42,11 @@ define('app/view/table-view', [
          * @param  {Backbone.Model}
          */
         renderTableRow: function(model) {
-            this.$el.find('tbody').append(tableRow(model.toJSON()));
+            var data = _.extend({
+                newRow: true
+            }, model.toJSON())
+
+            this.$el.find('tbody').append(tableRow(data));
         }
     });
 
