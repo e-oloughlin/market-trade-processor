@@ -13,7 +13,7 @@ function getRandomCountry() {
         status: 'assigned'
     });
 
-    return country.alpha3;
+    return country.alpha2;
 }
 
 function getRandomCurrency() {

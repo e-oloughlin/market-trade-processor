@@ -88,7 +88,7 @@ const Message = new Schema({
         required: true,
         validate: {
             validator: (country) => {
-                if(typeof country === 'string' && country.length > 0) {
+                if(typeof country === 'string' && country.length === 2) {
                     return _.isPlainObject(countries[country]) && typeof countries[country].alpha2 === 'string';
                 }
 
