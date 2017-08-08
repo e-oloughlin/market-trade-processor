@@ -47,14 +47,22 @@ define('app/view/table-view', [
         renderTableRow: function(model) {
             var data = _.extend({
                 newRow: true
-            }, model.toJSON())
+            }, model.toJSON()),
 
-            this.$el.find('tbody').append(tableRow(data));
+            $row = $(tableRow(data));
+
+            this.$el.find('tbody').append($row);
+
+            // Prevent the row being reanimated
+            // when it goes out and into view again,
+            // eg. when tabbing
+            setTimeout(function() {
+                $row.removeClass('green-flash');
+            }, 2000)
 
             this.$el.animate({
                 scrollTop: this.$el.prop('scrollHeight')
             }, 750);
-
         }
     });
 
