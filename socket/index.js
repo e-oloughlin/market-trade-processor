@@ -1,6 +1,6 @@
 /**
  * Socket io module.
- * Place all subscriptions in here.
+ * Place all socket emissions here.
  */
 const socketio = require('socket.io');
 const pubsub = require('pubsub-js');
