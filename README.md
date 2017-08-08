@@ -15,7 +15,7 @@ Dependencies can be installed with ```npm install``` and ```bower install```
 ##### Starting the app
 ```npm run start``` or ```npm run dev``` for a live reloading server which listens for file changes.
 
-### Message Object
+## API
 Message objects can be posted and read from the api in the following format:
 ```
 {
