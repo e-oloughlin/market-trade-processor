@@ -35,9 +35,6 @@ define('app/view/table-view', [
          */
         render: function() {
             this.$el.html(table(this.collection.toJSON()));
-
-            // Set the height of the table to the window height
-            this.$el.css('max-height', ($(window).height() - $('.navbar').outerHeight(true)));
         },
 
         /**

@@ -8,7 +8,8 @@ require.config({
         lodash: 'lib/lodash/lodash',
         bsTab: 'lib/bootstrap/js/tab',
         text: 'lib/text/text',
-        socketio: '/socket.io/socket.io.js'
+        socketio: '/socket.io/socket.io.js',
+        async: 'lib/requirejs-plugins/src/async',
     },
     shim: {
         socketio: {
@@ -25,15 +26,25 @@ require([
     'jquery',
     'app/collection/message-collection',
     'app/view/table-view',
+    'app/view/map-view',
     'bsTab'
-], function(domReady, $, messageCollection, tableView) {
+], function(domReady, $, messageCollection, tableView, mapView) {
     var app = {
         messages: new messageCollection()
     };
 
     domReady(function() {
+        var $nav = $('.navbar'),
+            navMargin = parseFloat($nav.css('margin-bottom'));
+
+        // Set each tab pane to have a max height of the viewport
+        $('.tab-pane').css('height', $(window).height() - $nav.outerHeight() - (navMargin * 2));
+
         // Grab initial messages from the server
         app.messages.fetch().done(function() {
+            // Initialize the map view
+            app.mapView = new mapView();
+
             // Initialize a new table view for all messages
             app.tableView = new tableView({
                 collection: app.messages

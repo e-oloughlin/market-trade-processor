@@ -7,12 +7,12 @@ html.no-js
                 include includes/navbar
                 div.col-md-12
                     div(class="tab-content")
-                        div#message-list.tab-pane.active(role="tabpanel")
-                            <div class="loading center">
-                                <p>Loading</p>
-                            </div>
-                        div#map.tab-pane(role="tabpanel")
-                            h3 Map
+                        div#map-container.tab-pane.active(role="tabpanel")
+                            include includes/loading
+
+                        div#message-list.tab-pane(role="tabpanel")
+                            include includes/loading
+
                         div#insights.tab-pane(role="tabpanel")
                             h3 Insights
 
