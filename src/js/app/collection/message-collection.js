@@ -1,7 +1,7 @@
 define('app/collection/message-collection', [
     'backbone',
     'socketio',
-    'config'
+    'config/app'
 ], function(Backbone, io, config) {
 
     /**
