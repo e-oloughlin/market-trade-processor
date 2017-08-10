@@ -22,7 +22,11 @@ gulp.task('css', function () {
     return gulp.src('src/less/main.less')
     .pipe(sourcemaps.init())
     .pipe(less({
-        paths: [ path.join(__dirname, 'src', 'less', 'includes') ]
+        paths: [
+            path.join(__dirname, 'src', 'less', 'bootstrap'),
+            path.join(__dirname, 'src', 'less', 'bootstrap', 'mixins'),
+            path.join(__dirname, 'src', 'less', 'includes')
+        ]
     }))
     .pipe(autoprefixer('last 4 version'))
     .pipe(cssnano())

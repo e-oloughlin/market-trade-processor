@@ -63,3 +63,7 @@ GET ```/api/message/:id?depth=1``` will return an object like so:
     }
 }
 ````
+
+## Notes
+
+Location data for countries in ```data/country-locations.json``` was sourced [here](https://developers.google.com/public-data/docs/canonical/countries_csv)

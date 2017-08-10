@@ -17,6 +17,7 @@ mongoose.Promise = bluebird;
 
 // Static File Configuration
 app.use('/css', express.static(path.join(__dirname, 'public/assets/css')));
+app.use('/fonts', express.static(path.join(__dirname, 'public/assets/fonts')));
 app.use('/images', express.static(path.join(__dirname, 'public/assets/images')));
 app.use('/js', express.static(path.join(__dirname, 'public/assets/js')));
 
