@@ -17,6 +17,10 @@ const Errors = {
             rate: 'rate must be greater than 0',
             timePlaced: 'timePlaced must be a date in this format: DD-MMM-YY HH:mm:ss',
             originatingCountry: 'originatingCountry must be a valid country code'
+        },
+        Country: {
+            latitude: 'latitude must be a valid coordinate',
+            longitude: 'longitude must be a valid coordinate'
         }
     }
 };

@@ -14,7 +14,7 @@ mongoose.Promise = Promise;
 // A valid message object
 const data = require('../../../mock/data').message;
 
-describe('MODEL: Message', () => {
+describe('Model - Message', () => {
     /**
      * Set up DB connection
      */
@@ -294,7 +294,6 @@ describe('MODEL: Message', () => {
         });
     });
 
-    // Prove the timePlaced plugin is working
     describe('timePlaced', () => {
         it('should be a date string with the format: DD-MMM-YY HH:mm:ss', (done) => {
             new Promise((resolve, reject) => {

@@ -49,7 +49,7 @@ describe('REST API', () => {
             Promise.all(rates.map((rate) => {
                 const data = Object.assign({}, mockMessage, { rate });
 
-                return new Message(data).save().reflect();
+                return chai.request(app).post('/api/message').send(data);
             }))
             .then(done());
         });
@@ -68,6 +68,9 @@ describe('REST API', () => {
                     expect(response.body).to.have.lengthOf(2);
                     expect(response.body[0]).to.have.property('rate').that.is.oneOf(rates);
                     expect(response.body[1]).to.have.property('rate').that.is.oneOf(rates);
+
+                    expect(response.body[0]).to.not.have.property('countryInfo');
+                    expect(response.body[1]).to.not.have.property('countryInfo');
 
                     done();
                 });
@@ -338,7 +341,7 @@ describe('REST API', () => {
         /**
          *  Valid Data
          */
-        it('should accept an valid object', (done) => {
+        it('should accept a valid object', (done) => {
             let data = Object.assign({}, mockMessage);
 
             chai.request(app).post('/api/message').send(data).end((error, response) => {
