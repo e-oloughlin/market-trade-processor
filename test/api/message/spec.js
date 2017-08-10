@@ -49,7 +49,7 @@ describe('REST API', () => {
             Promise.all(rates.map((rate) => {
                 const data = Object.assign({}, mockMessage, { rate });
 
-                return new Message(data).save().reflect();
+                return chai.request(app).post('/api/message').send(data);
             }))
             .then(done());
         });
@@ -68,6 +68,33 @@ describe('REST API', () => {
                     expect(response.body).to.have.lengthOf(2);
                     expect(response.body[0]).to.have.property('rate').that.is.oneOf(rates);
                     expect(response.body[1]).to.have.property('rate').that.is.oneOf(rates);
+
+                    expect(response.body[0]).to.not.have.property('countryInfo');
+                    expect(response.body[1]).to.not.have.property('countryInfo');
+
+                    done();
+                });
+        });
+
+        it('should return all messages with country info when depth=1', (done) => {
+            /**
+             * Then, verify they are returned from the API
+             */
+            chai.request(app).get('/api/message?depth=1')
+                .end((error, response) => {
+                    expect(error).to.be.null;
+                    expect(response).to.have.status(200);
+                    expect(response).to.have.headers;
+
+                    expect(response.body).to.be.an('array');
+                    expect(response.body).to.have.lengthOf(2);
+
+                    expect(response.body[0]).to.have.property('rate').that.is.oneOf(rates);
+                    expect(response.body[1]).to.have.property('rate').that.is.oneOf(rates);
+
+                    expect(response.body[0]).to.have.nested.property('countryInfo.latitude');
+                    expect(response.body[1]).to.have.nested.property('countryInfo.longitude');
+                    expect(response.body[1]).to.have.nested.property('countryInfo.name');
 
                     done();
                 });
@@ -108,6 +135,25 @@ describe('REST API', () => {
 
                 expect(response.body).to.be.an('object');
                 expect(response.body).to.include(mockMessage);
+
+                done();
+            });
+        });
+
+        it('should return a message by its id property with country info when depth=1', (done) => {
+            chai.request(app)
+            .get('/api/message/'+messageId+'?depth=1')
+            .end((error, response) => {
+                expect(error).to.be.null;
+                expect(response).to.have.status(200);
+                expect(response).to.have.headers;
+
+                expect(response.body).to.be.an('object');
+                expect(response.body).to.include(mockMessage);
+
+                expect(response.body).to.have.nested.property('countryInfo.latitude');
+                expect(response.body).to.have.nested.property('countryInfo.longitude');
+                expect(response.body).to.have.nested.property('countryInfo.name');
 
                 done();
             });
@@ -338,7 +384,7 @@ describe('REST API', () => {
         /**
          *  Valid Data
          */
-        it('should accept an valid object', (done) => {
+        it('should accept a valid object', (done) => {
             let data = Object.assign({}, mockMessage);
 
             chai.request(app).post('/api/message').send(data).end((error, response) => {

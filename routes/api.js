@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router({mergeParams: true});
-const MessageController = require('../controller/message');
+const MessageController = require('../controller/api/message');
 
 /**
  * REST API Route
