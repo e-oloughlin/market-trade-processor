@@ -31,12 +31,24 @@ app.use(bodyParser.text());
 app.use(bodyParser.json({ type: 'application/json'}));
 
 // Main Page
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
     res.render('index');
 });
 
 // API Routes
 app.use('/api', apiRouter);
+
+app.get('/clear-db', (req, res) => {
+    if(req.query.user === 'eoghan') {
+        const Message = require('./model/message');
+
+        Message.remove({}, function() {
+            console.log('DB cleared');
+        });
+    }
+
+    res.redirect('/');
+});
 
 // If not in test mode
 if(process.env.NODE_ENV !== 'test') {
