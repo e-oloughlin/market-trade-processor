@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const Errors = require('../../config/errors').get('model');
 const Message = require('../../model/message');
 const pubsub = require('pubsub-js');
 const countryLocations = require('../../data/country-locations.json');
@@ -44,6 +45,23 @@ function addDepth(message) {
     return response;
 }
 
+/**
+ * There is a discrepancy between the countries found in npm module country-data
+ * and the list found in data/country-locations.json
+ * This causes issues with locating a country on a map so this function can check
+ * to see of a message's originating country is located within data/country-locations.json
+ * as that file contains the application's needed lat lon coordinates
+ * @param  {Object} message
+ * @return {Boolean}
+ */
+function checkWorkingCountry(message) {
+    let check = _.find(countryLocations, (country) => {
+        return country.code === message.originatingCountry
+    });
+
+    return !!check;
+}
+
 module.exports = {
     /*
      * GET /api/message route to retrieve all messages
@@ -77,6 +95,16 @@ module.exports = {
      * POST /api/message route to create a message
      */
     CreateMessage: (req, res) => {
+        if(!checkWorkingCountry(req.body)) {
+            return res.json({
+                status: 'Message save failed',
+                errors: {
+                    originatingCountry: Errors.Message.badCountry,
+                    countryCode: req.body.originatingCountry
+                }
+            });
+        }
+
         let message = new Message(req.body);
 
         message.save((err, message) => {
@@ -94,7 +122,7 @@ module.exports = {
             }
 
             // Announce the creation of a new message object
-            pubsub.publish('new-message', message);
+            pubsub.publish('new-message', addDepth(message.toObject()));
 
             return res.json({
                 status: 'Message saved',

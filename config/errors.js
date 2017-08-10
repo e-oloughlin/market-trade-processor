@@ -16,7 +16,8 @@ const Errors = {
             amountBuy: 'amountBuy must be greater than 0',
             rate: 'rate must be greater than 0',
             timePlaced: 'timePlaced must be a date in this format: DD-MMM-YY HH:mm:ss',
-            originatingCountry: 'originatingCountry must be a valid country code'
+            originatingCountry: 'originatingCountry must be a valid country code',
+            badCountry: 'not a working country'
         }
     }
 };
