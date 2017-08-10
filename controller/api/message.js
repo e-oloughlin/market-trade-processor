@@ -1,6 +1,48 @@
 const _ = require('lodash');
-const Message = require('../model/message');
+const Message = require('../../model/message');
 const pubsub = require('pubsub-js');
+const countryLocations = require('../../data/country-locations.json');
+
+/**
+ * Accepts a collection of mongoose models
+ * and returns them transformed to an array
+ * of plain objects
+ * @param  {Array}
+ * @return {Array}
+ */
+function jsonifyDocuments(documents) {
+    return _.map(documents, (document) => {
+        return document.toObject();
+    });
+}
+
+/**
+ * Adds child objects to a mongoose document
+ * @param {Array|Object} message
+ */
+function addDepth(message) {
+    let response;
+
+    if(_.isArray(message)) {
+        response = _.map(message, (msg) => {
+            return _.assign({}, msg, {
+                countryInfo: _.find(countryLocations, (country) => {
+                    return country.code === msg.originatingCountry
+                })
+            });
+        });
+    }
+
+    if(_.isPlainObject(message)) {
+        let countryInfo = _.find(countryLocations, (country) => {
+            return country.code === message.originatingCountry
+        });
+
+        response = _.assign({}, message, { countryInfo });
+    }
+
+    return response;
+}
 
 module.exports = {
     /*
@@ -10,7 +52,11 @@ module.exports = {
         Message.find({}, (err, messages) => {
             if (err) return res.json(err);
 
-            res.json(messages);
+            if(req.query.depth == 1) {
+                return res.json(addDepth(jsonifyDocuments(messages)));
+            }
+
+            return res.json(messages);
         });
     },
     /*
@@ -20,7 +66,11 @@ module.exports = {
         Message.findById(req.params.id, (err, message) => {
             if(err) return res.json(err);
 
-            res.json(message);
+            if(req.query.depth == 1) {
+                return res.json(addDepth(message.toObject()));
+            }
+
+            return res.json(message);
         });
     },
     /*
@@ -46,7 +96,7 @@ module.exports = {
             // Announce the creation of a new message object
             pubsub.publish('new-message', message);
 
-            res.json({
+            return res.json({
                 status: 'Message saved',
                 object: message
             });
@@ -62,7 +112,7 @@ module.exports = {
             Object.assign(message, req.body).save((err, message) => {
                 if(err) return res.json(err);
 
-                res.json({
+                return res.json({
                     status: 'Message updated',
                     object: message
                 });
@@ -74,7 +124,7 @@ module.exports = {
      */
     RemoveMessage: (req, res) => {
         Message.remove({_id: req.params.id}, (err, result) => {
-            res.json({
+            return res.json({
                 status: 'Message deleted',
                 result
             });
