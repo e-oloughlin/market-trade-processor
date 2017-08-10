@@ -41,9 +41,15 @@ require([
         $('.tab-pane').css('height', $(window).height() - $nav.outerHeight() - (navMargin * 2));
 
         // Grab initial messages from the server
-        app.messages.fetch().done(function() {
+        app.messages.fetch({
+            data: {
+                depth: 1 // Request child objects
+            }
+        }).done(function() {
             // Initialize the map view
-            app.mapView = new mapView();
+            app.mapView = new mapView({
+                collection: app.messages
+            });
 
             // Initialize a new table view for all messages
             app.tableView = new tableView({

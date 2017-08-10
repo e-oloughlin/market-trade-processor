@@ -1,8 +1,9 @@
 define('app/collection/message-collection', [
     'backbone',
     'socketio',
-    'config/app'
-], function(Backbone, io, config) {
+    'config/app',
+    'app/model/message-model'
+], function(Backbone, io, config, messageModel) {
 
     /**
      * Socket.io object
@@ -12,6 +13,8 @@ define('app/collection/message-collection', [
 
     return Backbone.Collection.extend({
         url: config.api.message,
+
+        model: messageModel,
 
         initialize: function() {
             var that = this;
@@ -23,14 +26,6 @@ define('app/collection/message-collection', [
                     that.add(message);
                 }
             });
-        },
-
-        /**
-         * Specify an _id property to be the unique
-         * identifier for models in this collection
-         */
-        modelId: function(attrs) {
-            return attrs._id;
         }
     });
 

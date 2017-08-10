@@ -382,6 +382,35 @@ describe('REST API', () => {
         });
 
         /**
+         *  originatingCountry should be a country within data/country-locations.json
+         *  This is merely to assure the front end won't fail with incomplete data later.
+         *  This is obviously not ideal but this is a sample app :)
+         */
+        it('should reject a bad originatingCountry', (done) => {
+            let data = Object.assign({}, mockMessage, {
+                originatingCountry: 'SX' // SX is not in data/country-locations.json
+            });
+
+            chai.request(app).post('/api/message').send(data).end((error, response) => {
+                expect(error).to.be.null;
+
+                expect(response).to.be.an('object')
+                    .that.has.nested.property('body.status')
+                    .that.equals('Message save failed');
+
+                expect(response.body)
+                    .to.have.nested.property('errors.originatingCountry')
+                    .that.equals(Errors.Message.badCountry);
+
+                expect(response.body)
+                    .to.have.nested.property('errors.countryCode')
+                    .that.equals('SX');
+
+                done();
+            });
+        });
+
+        /**
          *  Valid Data
          */
         it('should accept a valid object', (done) => {
