@@ -1,9 +1,10 @@
 define('app/view/marker-view', [
     'underscore',
     'handlebars',
+    'util/pubsub',
     'text!templates/info-window.hbs',
     'async!https://maps.googleapis.com/maps/api/js?key=AIzaSyCY93WW0tiYqWeRh-GOiIzGj9QvO_ou33s'
-], function(_, handlebars, infoWindowTemplate) {
+], function(_, handlebars, pubsub, infoWindowTemplate) {
 
     var createInfoWindow = handlebars.compile(infoWindowTemplate);
 
@@ -52,8 +53,10 @@ define('app/view/marker-view', [
 
         infoWindow.setPosition(this.position);
 
+        pubsub.publish('marker-focus', this.position);
+
         infoWindow.open(this.map, this.marker);
-    }
+    };
 
     return MarkerView;
 
