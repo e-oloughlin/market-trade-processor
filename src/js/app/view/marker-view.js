@@ -1,10 +1,11 @@
 define('app/view/marker-view', [
+    'jquery',
     'underscore',
     'handlebars',
     'util/pubsub',
     'text!templates/info-window.hbs',
     'async!https://maps.googleapis.com/maps/api/js?key=AIzaSyCY93WW0tiYqWeRh-GOiIzGj9QvO_ou33s'
-], function(_, handlebars, pubsub, infoWindowTemplate) {
+], function($, _, handlebars, pubsub, infoWindowTemplate) {
 
     var createInfoWindow = handlebars.compile(infoWindowTemplate);
 
@@ -48,14 +49,24 @@ define('app/view/marker-view', [
         return this;
     };
 
+    /**
+     * Focus on a marker - center the map on it,
+     * re render the infowindow's content and
+     * show the infowindow
+     * @return {Object}     This view
+     */
     MarkerView.prototype.focus = function() {
         infoWindow.setContent(createInfoWindow(this.data));
-
         infoWindow.setPosition(this.position);
+        infoWindow.open(this.map, this.marker);
+
+        $('.info-window .btn').click(function(e) {
+            pubsub.publish('go-to-row', $(e.target).data('id'));
+        });
 
         pubsub.publish('marker-focus', this.position);
 
-        infoWindow.open(this.map, this.marker);
+        return this;
     };
 
     return MarkerView;
