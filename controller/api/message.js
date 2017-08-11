@@ -95,19 +95,9 @@ module.exports = {
      * POST /api/message route to create a message
      */
     CreateMessage: (req, res) => {
-        if(!checkWorkingCountry(req.body)) {
-            return res.json({
-                status: 'Message save failed',
-                errors: {
-                    originatingCountry: Errors.Message.badCountry,
-                    countryCode: req.body.originatingCountry
-                }
-            });
-        }
-
         let message = new Message(req.body);
 
-        message.save((err, message) => {
+        message.validate((err) => {
             if(err) {
                 let errors = {};
 
@@ -121,12 +111,24 @@ module.exports = {
                 });
             }
 
-            // Announce the creation of a new message object
-            pubsub.publish('new-message', addDepth(message.toObject()));
+            if(!checkWorkingCountry(req.body)) {
+                return res.json({
+                    status: 'Message save failed',
+                    errors: {
+                        originatingCountry: Errors.Message.badCountry,
+                        countryCode: req.body.originatingCountry
+                    }
+                });
+            }
 
-            return res.json({
-                status: 'Message saved',
-                object: message
+            message.save((err, message) => {
+                // Announce the creation of a new message object
+                pubsub.publish('new-message', addDepth(message.toObject()));
+
+                return res.json({
+                    status: 'Message saved',
+                    object: message
+                });
             });
         });
     },
