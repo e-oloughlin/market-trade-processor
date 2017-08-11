@@ -40,7 +40,7 @@ define('app/view/map-view', [
             this.collection.on('add', function(model) {
                 var markerData = model.getFormat('map-marker');
 
-                new marker(markerData).plot(this.map);
+                new marker(markerData).plot(this.map).focus();
 
                 this.map.panTo(markerData.country.position);
             }, this);
