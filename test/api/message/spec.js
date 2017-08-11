@@ -376,9 +376,7 @@ describe('REST API', () => {
                         Errors.general.requiredProperty('originatingCountry')
                     ]);
             })
-            .then(function fulfilled(result) {
-                done();
-            });
+            .then(done());
         });
 
         /**
