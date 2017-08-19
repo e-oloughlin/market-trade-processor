@@ -11,7 +11,7 @@ Mocha tests can be run with ```npm run test```
 ##### Mongodb
 A local installation of **Monogodb** needs to be installed and running.
 ##### Dependencies
-Dependencies can be installed with ```npm install``` and ```bower install```
+Dependencies can be installed with ```npm install```
 ##### Starting the app
 ```npm run start``` or ```npm run dev``` for a live reloading server which listens for file changes.
 
