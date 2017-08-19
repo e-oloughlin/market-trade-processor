@@ -8,7 +8,7 @@
     "start": "node app.js",
     "watch": "watchify -v --debug -t hbsfy src/js/main.js -o public/assets/js/bundle.js",
     "dev": "nodemon app.js",
-    "postinstall": "gulp css && gulp js && gulp templates"
+    "postinstall": "gulp css && gulp js"
   },
   "repository": {
     "type": "git",
