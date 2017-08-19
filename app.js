@@ -39,6 +39,16 @@ app.get('/', (req, res) => {
 // API Routes
 app.use('/api', apiRouter);
 
+app.get('/post-new-message', (req, res) => {
+    if(req.query.user === 'eoghan') {
+        const request = require('./mock/request');
+
+        request('https://market-trader.herokuapp.com/api/message');
+
+        res.send('<p> Done </p>');
+    }
+});
+
 app.get('/clear-db', (req, res) => {
     if(req.query.user === 'eoghan') {
         const Message = require('./model/message');
