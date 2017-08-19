@@ -1,9 +1,11 @@
 var gulp         = require('gulp'),
     path         = require('path'),
     gutil        = require('gulp-util'),
-    nodemon      = require('nodemon'),
     less         = require('gulp-less'),
     browserify   = require('browserify'),
+    hbsfy        = require('hbsfy').configure({
+        extensions: ['hbs']
+    }),
     source       = require('vinyl-source-stream'),
     buffer       = require('vinyl-buffer'),
     autoprefixer = require('gulp-autoprefixer'),
@@ -16,15 +18,20 @@ var gulp         = require('gulp'),
 /**
  *  Javascript
  */
-gulp.task('js',function(){
-    gulp.src('src/**/*.js')
-        .pipe(sourceMaps.init())
-        .pipe(gulp.dest('public/assets'))
+gulp.task('js', function () {
+    return browserify({
+        entries: './src/js/main.js',
+        debug: true,
+        transform: [hbsfy]
+    })
+    .bundle()
+    .pipe(source('bundle.min.js'))
+    .pipe(buffer())
+    .pipe(sourceMaps.init({loadMaps: true}))
         .pipe(uglify())
-        .on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
-        .pipe(rename({ suffix: '.min' }))
-        .pipe(sourceMaps.write())
-        .pipe(gulp.dest('public/assets'))
+        .on('error', gutil.log)
+    .pipe(sourceMaps.write('./'))
+    .pipe(gulp.dest('./public/assets/js/'));
 });
 
 /**
@@ -51,17 +58,10 @@ gulp.task('css', function () {
     .pipe(gulp.dest('public/assets/css'));
 });
 
-gulp.task('templates', () => {
-    gulp.src('src/js/templates/**/*.hbs')
-        .on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
-        .pipe(gulp.dest('public/assets/js/templates'));
-});
-
 /**
  *  Default tasks
  */
-gulp.task('default', ['css', 'js', 'templates'], function () {
+gulp.task('default', ['css', 'js'], function () {
     gulp.watch('src/less/**/*.less', ['css']);
-    gulp.watch('src/**/*.js', ['js']);
-    gulp.watch('src/**/*.hbs', ['templates']);
+    gulp.watch(['src/**/*.js', 'src/**/*.hbs'], ['js']);
 });

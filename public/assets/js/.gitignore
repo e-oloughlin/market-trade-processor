@@ -1,2 +1,3 @@
 # Ignore JS files, they can be generated upon build
 *.js
+*.map
