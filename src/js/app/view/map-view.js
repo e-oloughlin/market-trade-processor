@@ -1,41 +1,35 @@
-/**
- * A backbone view for the map of messages
- */
-define('app/view/map-view', [
-    'backbone',
-    'config/google-map',
-    'util/pubsub',
-    'app/view/marker-view',
-    'async!https://maps.googleapis.com/maps/api/js?key=AIzaSyCY93WW0tiYqWeRh-GOiIzGj9QvO_ou33s'
-], function(Backbone, mapConfig, pubsub, marker) {
+var $           = require('jquery'),
+    Backbone    = require('backbone'),
+    _           = require('underscore'),
+    mapConfig   = require('../../config/google-map'),
+    pubsub      = require('../../util/pubsub'),
+    marker      = require('./marker-view'),
+    googleMaps  = require('../../lib/google-maps');
 
-    return Backbone.View.extend({
+module.exports = Backbone.View.extend({
 
-        el: '#map-container',
+    el: '#map-container',
 
-        initialize: function() {
-            this.$map = $('<div id="map"/>');
+    initialize: function() {
+        this.$map = $('<div id="map"/>');
 
-            this.$el.html(this.$map);
+        this.$el.html(this.$map);
 
-            this.$map.css('height', this.$el.outerHeight());
+        this.$map.css('height', this.$el.outerHeight());
 
-            this.render();
-        },
+        this.render();
+    },
 
-        render: function() {
-            var that = this;
+    render: function() {
+        var that = this;
 
+        googleMaps.load(function() {
             that.map = new google.maps.Map(that.$map[0], _.extend({}, mapConfig, {
                 zoom: 3,
                 center: {
                     lat: 12, lng: -15
                 }
             }));
-
-            pubsub.subscribe('marker-focus', function(position) {
-                that.map.panTo(position);
-            });
 
             // Create and plot a marker on the map for each message in the collection
             that.collection.forEach(function(model) {
@@ -48,11 +42,8 @@ define('app/view/map-view', [
                 var markerData = model.getFormat('map-marker');
 
                 new marker(markerData).plot(that.map).focus();
-
-                that.map.panTo(markerData.country.position);
             });
-        }
-
-    });
+        });
+    }
 
 });
