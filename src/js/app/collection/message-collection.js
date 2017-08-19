@@ -1,32 +1,29 @@
-define('app/collection/message-collection', [
-    'backbone',
-    'socketio',
-    'config/app',
-    'app/model/message-model'
-], function(Backbone, io, config, messageModel) {
+// Dependencies
+var Backbone = require('backbone'),
+    io = require('socket.io-client'),
+    config = require('../../config/app'),
+    messageModel = require('../model/message-model');
 
-    /**
-     * Socket.io object
-     * @type {Object}
-     */
-    var socket = io.connect(location.origin);
+/**
+ * Socket.io object
+ * @type {Object}
+ */
+var socket = io.connect(location.origin);
 
-    return Backbone.Collection.extend({
-        url: config.api.message,
+module.exports = Backbone.Collection.extend({
+    url: config.api.message,
 
-        model: messageModel,
+    model: messageModel,
 
-        initialize: function() {
-            var that = this;
+    initialize: function() {
+        var that = this;
 
-            // When messages are added to this collection,
-            // render a row for them in the table
-            socket.on('new-message', function(message) {
-                if(!that.get(message._id)) {
-                    that.add(message);
-                }
-            });
-        }
-    });
-
+        // When messages are added to this collection,
+        // render a row for them in the table
+        socket.on('new-message', function(message) {
+            if(!that.get(message._id)) {
+                that.add(message);
+            }
+        });
+    }
 });
