@@ -1,8 +1,2 @@
-# Where bower components are installed
-lib
-
-## JS can be compiled during development & upon deployment
+# Ignore JS files, they can be generated upon build
 *.js
-
-## templates can be compiled during development & upon deployment
-templates
