@@ -1,3 +1,7 @@
+/**
+ * Google maps style preferences
+ * @type {Object}
+ */
 module.exports = {
     mapTypeControl: false,
     streetViewControl: false,

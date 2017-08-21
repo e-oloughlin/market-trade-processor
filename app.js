@@ -1,3 +1,4 @@
+const url = require('url');
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
@@ -31,6 +32,13 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.text());
 app.use(bodyParser.json({ type: 'application/json'}));
 
+function getFormattedUrl(req) {
+    return url.format({
+        protocol: req.protocol,
+        host: req.get('host')
+    });
+}
+
 // Main Page
 app.get('/', (req, res) => {
     res.render('index');
@@ -43,7 +51,9 @@ app.get('/post-new-message', (req, res) => {
     if(req.query.user === 'eoghan') {
         const request = require('./mock/request');
 
-        request('https://market-trader.herokuapp.com/api/message');
+        let url = `${getFormattedUrl(req)}/api/message`;
+
+        request(url);
 
         res.send('<p> Done </p>');
     }
