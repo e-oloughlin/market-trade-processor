@@ -1,5 +1,5 @@
 # Market Trade Processor - Sample Application
-A sample application demomstrating a REST API and live updating socket.io front end.
+A sample application demonstrating a REST API and live updating socket.io front end.
 
 ## Demo
 A live API can be viewed and _interacted with_ [here](https://market-trader.herokuapp.com/api/message) with a corresponding front end [here](https://market-trader.herokuapp.com/).

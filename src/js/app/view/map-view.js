@@ -32,18 +32,27 @@ module.exports = Backbone.View.extend({
             }));
 
             // Create and plot a marker on the map for each message in the collection
-            that.collection.forEach(function(model) {
-                new marker(model.getFormat('map-marker')).plot(that.map);
+            that.collection.each(function(model) {
+                that.addMarker(model);
             });
 
             // When a message gets added to the collection,
             // create and plot a marker for it, and pan the map to the new marker
             that.collection.on('add', function(model) {
-                var markerData = model.getFormat('map-marker');
-
-                new marker(markerData).plot(that.map).focus();
+                that.addMarker(model, true);
             });
         });
+    },
+
+    /**
+     * Create and add a marker to the google map
+     * @param {Backbone.Model}  model
+     * @param {Boolean}         focus      Whether to focus on the marker
+     */
+    addMarker: function(model, focus) {
+        var mapMarker = new marker(model.getFormat('map-marker')).plot(this.map);
+
+        if(focus) mapMarker.focus();
     }
 
 });
